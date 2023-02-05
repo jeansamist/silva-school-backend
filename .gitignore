@@ -2,3 +2,4 @@
 /src_
 /uploads/*
 /src/*/migrations
+/src/*/__pycache__/*
