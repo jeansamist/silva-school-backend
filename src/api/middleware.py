@@ -1,3 +1,7 @@
+from django.http.response import JsonResponse
+import jwt
+
+
 class AuthMiddleware:
   def __init__(self, get_response):
     self.get_response = get_response
@@ -7,6 +11,12 @@ class AuthMiddleware:
     print('\n\n call \n\n')
     return response
 
-  def process_view(self):
+  def process_view(self, request, view_func, view_args, view_kwargs):
     print('\n\n process_view \n\n')
-    return None
+    try:
+      token = request.headers['Authorization']
+      print(jwt.decode(token, 'secret', 'HS256'))
+
+    except:
+      # print(request)
+      return JsonResponse(data={'detail': 'no token'}, status=400)

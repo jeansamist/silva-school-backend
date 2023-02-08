@@ -1,10 +1,20 @@
 from django.db import models
-from .functions import random_filename
+import random
+import string
 from django.contrib.auth.models import Permission
-# Create your models here.
-
+from django.contrib.auth.hashers import (
+    check_password,
+    make_password,
+)
 from pathlib import Path
 import datetime
+# Create your models here.
+
+
+def random_filename(ext):
+  letters = string.ascii_letters
+  result_str = ''.join(random.choice(letters) for i in range(100))
+  return result_str + ext
 
 
 def school_image_upload_path(instance, filename):
@@ -58,9 +68,28 @@ class User(Person):
       "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."), error_messages={"unique": ("A user with that username already exists."), })
   password = models.TextField()
   role = models.ForeignKey(Role, related_name="users",
-                           on_delete=models.CASCADE)
-  schools = models.ManyToManyField(School, related_name="users")
+                           on_delete=models.CASCADE, blank=True, null=True)
+  schools = models.ManyToManyField(
+      School, related_name="users", blank=True, null=True)
+  _password = None
   REQUIRED_FIELDS = ["username", "password"]
+
+  def get_full_name(self):
+    full_name = "%s %s" % (self.first_name, self.last_name)
+    return full_name.strip()
+
+  def set_password(self, raw_password):
+    self.password = make_password(raw_password)
+    self._password = raw_password
+
+  def check_password(self, raw_password):
+    def setter(raw_password):
+      self.set_password(raw_password)
+      # Password hash upgrades shouldn't be considered password changes.
+      self._password = None
+      self.save(update_fields=["password"])
+
+    return check_password(raw_password, self.password, setter)
 
 
 class Subject(TimespamtedModel):
@@ -90,7 +119,7 @@ class ClassRoom(TimespamtedModel):
 
 class Professor(User):
   subject = models.ForeignKey(
-      Subject, related_name='profs', on_delete=models.CASCADE)
+      Subject, related_name='professors', on_delete=models.CASCADE)
   classes = models.ManyToManyField(Class, related_name="professors")
 
   def __str__(self):
