@@ -141,4 +141,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_HEADERS = ['Content-Type', 'Action-Name  ']
+CORS_ALLOW_HEADERS = ['Content-Type', 'Action-Name']

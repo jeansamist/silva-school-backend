@@ -1,6 +1,6 @@
 from django.db import models
-import random
-import string
+# import random
+# import string
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import (
     check_password,
@@ -11,13 +11,14 @@ import datetime
 # Create your models here.
 
 
-def random_filename(ext):
-  letters = string.ascii_letters
-  result_str = ''.join(random.choice(letters) for i in range(100))
-  return result_str + ext
+# def random_filename(ext):
+#   letters = string.ascii_letters
+#   result_str = ''.join(random.choice(letters) for i in range(100))
+#   return result_str + ext
 
 
 def school_image_upload_path(instance, filename):
+  from .functions import random_filename
   ext = Path(filename).suffix
   return 'images/schools/{filename}'.format(filename=random_filename(ext))
 
