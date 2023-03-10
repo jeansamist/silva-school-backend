@@ -28,8 +28,8 @@ class AuthMiddleware:
 
     admin_exist = User.objects.filter(role=1).count() == 1
     school_exist = School.objects.all().count() >= 1
+    config = {'admin_exist': admin_exist, 'school_exist': school_exist}
     if not admin_exist or not school_exist:
-      config = {'admin_exist': admin_exist, 'school_exist': school_exist}
       try:
         action = request.headers['Action-Name']
         if not action == 'config':
