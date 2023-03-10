@@ -12,7 +12,7 @@ class SchoolSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = School
-    fields = ('id', 'name', 'location', 'image', 'classes', 'users')
+    fields = '__all__'
 
 
 class UserSerailizer(serializers.ModelSerializer):
