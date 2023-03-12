@@ -29,6 +29,12 @@ MEDIA_URL = '/uploads/'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-7t!rgbi%!i8lznrh^&b-60v54!=qx-xpe74txik1w$n3a397f6'
 
+
+ACCESS_TOKEN_EXPIRES = 5
+REFRESH_TOKEN_EXPIRES = 15
+# ACCESS_TOKEN_EXPIRES = 60 * 5
+# REFRESH_TOKEN_EXPIRES = 60 * 60
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
