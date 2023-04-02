@@ -30,10 +30,10 @@ MEDIA_URL = '/uploads/'
 SECRET_KEY = 'django-insecure-7t!rgbi%!i8lznrh^&b-60v54!=qx-xpe74txik1w$n3a397f6'
 
 
-ACCESS_TOKEN_EXPIRES = 5
-REFRESH_TOKEN_EXPIRES = 15
-# ACCESS_TOKEN_EXPIRES = 60 * 5
-# REFRESH_TOKEN_EXPIRES = 60 * 60
+# ACCESS_TOKEN_EXPIRES = 5
+# REFRESH_TOKEN_EXPIRES = 15
+ACCESS_TOKEN_EXPIRES = 60 * 30
+REFRESH_TOKEN_EXPIRES = 60 * 60
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -147,4 +147,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOW_HEADERS = ['Content-Type', 'Action-Name']
+CORS_ALLOW_HEADERS = ['Content-Type', 'Action-Name', 'Authorization']

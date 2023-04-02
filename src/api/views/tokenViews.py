@@ -11,30 +11,35 @@ import jwt
 
 class RefreshTokenView(APIView):
   def post(self, request):
+    # try:
+    refresh = request.data['refresh']
     try:
-      refresh = request.data['refresh']
-      try:
-        payload = jwt.decode(refresh, settings.SECRET_KEY, algorithms="HS256")
+      payload = jwt.decode(refresh, settings.SECRET_KEY, algorithms="HS256")
 
-        user = User.objects.get(pk=payload['id'])
+      user = User.objects.get(pk=payload['id'])
 
-        if user is None:
-          raise AuthenticationFailed('user not found')
+      if user is None:
+        raise AuthenticationFailed('user not found')
 
-        access_payload = {
-            "id": user.pk,
-            "exp": time.time() + settings.ACCESS_TOKEN_EXPIRES,
-        }
-        refresh_payload = {
-            "id": user.pk,
-            "exp": time.time() + settings.REFRESH_TOKEN_EXPIRES,
-        }
-        access_token = jwt.encode(
-            access_payload, settings.SECRET_KEY, algorithm="HS256")
-        refresh_token = jwt.encode(
-            refresh_payload, settings.SECRET_KEY, algorithm="HS256")
-        return Response({"access": access_token, "refresh": refresh_token, "expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_EXPIRES)})
-      except:
-        raise AuthenticationFailed({'details': 'token expired'})
+      access_payload = {
+          "id": user.pk,
+          "exp": time.time() + settings.ACCESS_TOKEN_EXPIRES,
+      }
+      refresh_payload = {
+          "id": user.pk,
+          "exp": time.time() + settings.REFRESH_TOKEN_EXPIRES,
+      }
+      access_token = jwt.encode(
+          access_payload, settings.SECRET_KEY, algorithm="HS256")
+      refresh_token = jwt.encode(
+          refresh_payload, settings.SECRET_KEY, algorithm="HS256")
+      return Response({
+          "access": access_token,
+          "refresh": refresh_token,
+          "access_expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_EXPIRES),
+          "refresh_expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.REFRESH_TOKEN_EXPIRES)
+      })
     except:
-      raise ValidationError({'details': 'We had a error'})
+      raise AuthenticationFailed({'detail': 'token expired'})
+    # except:
+    #   raise ValidationError({'details': 'We had a error'})

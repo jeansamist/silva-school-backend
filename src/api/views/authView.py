@@ -2,6 +2,7 @@ import email
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
+from ..serializers import UserSerailizer
 from django.conf import settings
 # from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
 from ..models import User
@@ -39,4 +40,23 @@ class LoginView(APIView):
         access_payload, settings.SECRET_KEY, algorithm="HS256")
     refresh_token = jwt.encode(
         refresh_payload, settings.SECRET_KEY, algorithm="HS256",)
-    return Response({"access": access_token, "refresh": refresh_token, "expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_EXPIRES)})
+    return Response({
+        "access": access_token,
+        "refresh": refresh_token,
+        "access_expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.ACCESS_TOKEN_EXPIRES),
+        "refresh_expire": datetime.datetime.now() + datetime.timedelta(seconds=settings.REFRESH_TOKEN_EXPIRES)
+    })
+
+
+class CurrentAuthUserView(APIView):
+  def get(self, request):
+    try:
+      user = request.current_user
+    except:
+      return Response({"detail": "user not found try to login"}, status=403)
+
+    serializer = UserSerailizer(user)
+    try:
+      return Response(serializer.data)
+    except:
+      return Response({"detail": "user not found"}, status=403)

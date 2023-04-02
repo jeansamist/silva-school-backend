@@ -1,11 +1,11 @@
 from rest_framework import serializers
-from .models import Professor, School, Class, Subject, User, ClassRoom, Action, Role, Permission
+from .models import Professor, School, ClassLevel, Subject, User, ClassRoom, Action, Role, Permission
 
 
 class SchoolSerializer(serializers.ModelSerializer):
   image = serializers.ImageField(required=False)
   classes = serializers.PrimaryKeyRelatedField(
-      queryset=Class.objects.all(), many=True)
+      queryset=ClassLevel.objects.all(), many=True)
 
   users = serializers.PrimaryKeyRelatedField(
       queryset=User.objects.all(), many=True)
@@ -18,8 +18,8 @@ class SchoolSerializer(serializers.ModelSerializer):
 class UserSerailizer(serializers.ModelSerializer):
   # role = serializers.PrimaryKeyRelatedField(
   #     queryset=User.objects.all(), many=False)
-  # schools = serializers.PrimaryKeyRelatedField(
-  #     queryset=School.objects.all(), many=True)
+  schools = serializers.PrimaryKeyRelatedField(
+      queryset=School.objects.all(), many=True)
 
   class Meta:
     model = User
@@ -31,9 +31,23 @@ class UserSerailizer(serializers.ModelSerializer):
     }
 
   def create(self, validated_data):
+
     password = validated_data.pop('password', None)
-    instance = self.Meta.model(**validated_data)
+    schools_data = validated_data.pop('schools', [])
+    user = self.Meta.model.objects.create(**validated_data)
     if password is not None:
-      instance.set_password(password)
-    instance.save()
-    return instance
+      user.set_password(password)
+    user.schools.set(schools_data)
+    user.save()
+    return user
+
+
+class ClassLevelSerializer(serializers.ModelSerializer):
+  school = serializers.PrimaryKeyRelatedField(
+      queryset=School.objects.all(), many=False)
+  subjects = serializers.PrimaryKeyRelatedField(
+      queryset=Subject.objects.all(), many=True)
+
+  class Meta:
+    model = ClassLevel
+    fields = '__all__'

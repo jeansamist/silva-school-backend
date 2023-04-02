@@ -1,6 +1,7 @@
 from django.http.response import JsonResponse
 import jwt
 from .models import User, Permission, Role, School
+from django.conf import settings
 
 PERMISSIONS = [
     Permission(name="create", action_name="create"),
@@ -36,3 +37,16 @@ class AuthMiddleware:
           return JsonResponse(data=config, status=200)
       except:
         return JsonResponse(data=config, status=200)
+    try:
+      access = request.headers['Authorization']
+      payload = jwt.decode(access, settings.SECRET_KEY, algorithms="HS256")
+
+      user = User.objects.get(pk=payload['id'])
+      print(user)
+      if user is None:
+        error = {'detail': 'User not found'}
+        return JsonResponse(data=error, status=403)
+      else:
+        request.current_user = user
+    except:
+      pass

@@ -1,6 +1,6 @@
 from django.db import models
 # import random
-# import string
+from qrcode import make
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import (
     check_password,
@@ -21,6 +21,13 @@ def school_image_upload_path(instance, filename):
   from .functions import random_filename
   ext = Path(filename).suffix
   return 'images/schools/{filename}'.format(filename=random_filename(ext))
+
+
+def avatar_image_upload_path(instance, filename):
+  from .functions import random_filename
+  ext = Path(filename).suffix
+  make('test')
+  return 'images/avatars/{filename}'.format(filename=random_filename(ext))
 
 
 class TimespamtedModel(models.Model):
@@ -58,6 +65,8 @@ class Person(TimespamtedModel):
   status = models.CharField(max_length=255, default='new')
   email = models.EmailField(null=True, blank=True)
   phone = models.IntegerField(null=True, blank=True)
+  avatar = models.ImageField(
+      upload_to=avatar_image_upload_path, blank=True, null=True)
   # avatar = models.ImageField(upload_to=upload_to2, blank=True, null=True)
 
   class Meta:
@@ -99,7 +108,7 @@ class Subject(TimespamtedModel):
   # classes = models.ManyToManyField(Class, related_name='subjects')
 
 
-class Class(TimespamtedModel):
+class ClassLevel(TimespamtedModel):
   name = models.CharField(max_length=25)
   school = models.ForeignKey(
       School, related_name='classes', on_delete=models.CASCADE)
@@ -115,13 +124,13 @@ class Class(TimespamtedModel):
 class ClassRoom(TimespamtedModel):
   name = models.CharField(max_length=50)
   classroom_class = models.ForeignKey(
-      Class, related_name='classrooms', on_delete=models.CASCADE)
+      ClassLevel, related_name='classrooms', on_delete=models.CASCADE)
 
 
 class Professor(User):
   subject = models.ForeignKey(
       Subject, related_name='professors', on_delete=models.CASCADE)
-  classes = models.ManyToManyField(Class, related_name="professors")
+  classes = models.ManyToManyField(ClassLevel, related_name="professors")
 
   def __str__(self):
     return self.name
