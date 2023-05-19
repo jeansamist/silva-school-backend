@@ -3,7 +3,7 @@ from api.views.userViews import RegisterView
 from api.views.schoolViews import SchoolView, SchoolDetailView
 from api.views.configViews import ConfigView
 from api.views.authView import LoginView, CurrentAuthUserView
-from api.views.ClassesViews import ClassLevel
+from api.views.ClassesViews import ClassLevelView, ClassLevelDetailView, ClassRoomView
 from api.views.tokenViews import RefreshTokenView
 urlpatterns = [
     path('user', RegisterView.as_view()),
@@ -13,5 +13,7 @@ urlpatterns = [
     path('auth/login', LoginView.as_view()),
     path('auth/user', CurrentAuthUserView.as_view()),
     path('token/refresh', RefreshTokenView.as_view()),
-    path('class', ClassLevel.as_view()),
+    path('class', ClassLevelView.as_view()),
+    path('class/<int:pk>', ClassLevelDetailView.as_view()),
+    path('class/<int:class_level_pk>/classroom', ClassRoomView.as_view()),
 ]

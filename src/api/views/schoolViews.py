@@ -30,21 +30,20 @@ class SchoolDetailView(APIView):
 class SchoolView(APIView):
   def get(self, request):
     try:
-
       user = User.objects.get(pk=request.current_user.pk)
       serializer = False
-
-      if user.role.name == Role.objects.get(name='root').name:
-        serializer = SchoolSerializer(School.objects.all(), many=True)
-      elif user.schools.count() > 0:
-        serializer = SchoolSerializer(user.schools, many=True)
-
-      if serializer == False:
-        return Response({'details': 'You cannot access to a School'}, HTTP_401_UNAUTHORIZED)
-
-      return Response(serializer.data)
     except:
-      return Response({'details': 'You cannot access to a School. Try to login'}, HTTP_401_UNAUTHORIZED)
+      return Response({'details': 'You cannot access to a School. Try xto login'}, HTTP_401_UNAUTHORIZED)
+
+    if user.role.name == Role.objects.get(name='root').name:
+      serializer = SchoolSerializer(School.objects.all(), many=True)
+    elif user.schools.count() > 0:
+      serializer = SchoolSerializer(user.schools, many=True)
+
+    if serializer == False:
+      return Response({'details': 'You cannot access to a School'}, HTTP_401_UNAUTHORIZED)
+
+    return Response(serializer.data)
 
   def post(self, request):
     serializer = SchoolSerializer(data=request.data)

@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Professor, School, ClassLevel, Subject, User, ClassRoom, Action, Role, Permission
+from .models import Professor, School, ClassLevel, Subject, User, ClassRoom, Student, Role, Permission
 
 
 class SchoolSerializer(serializers.ModelSerializer):
   image = serializers.ImageField(required=False)
-  classes = serializers.PrimaryKeyRelatedField(
+  class_levels = serializers.PrimaryKeyRelatedField(
       queryset=ClassLevel.objects.all(), many=True)
 
   users = serializers.PrimaryKeyRelatedField(
@@ -38,6 +38,7 @@ class UserSerailizer(serializers.ModelSerializer):
     if password is not None:
       user.set_password(password)
     user.schools.set(schools_data)
+    user.create_qr_code()
     user.save()
     return user
 
@@ -47,7 +48,18 @@ class ClassLevelSerializer(serializers.ModelSerializer):
       queryset=School.objects.all(), many=False)
   subjects = serializers.PrimaryKeyRelatedField(
       queryset=Subject.objects.all(), many=True)
+  classrooms = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
   class Meta:
     model = ClassLevel
+    fields = '__all__'
+
+
+class ClassRoomSerializer(serializers.ModelSerializer):
+  students = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+  class_level = serializers.PrimaryKeyRelatedField(
+      queryset=ClassLevel.objects.all(), many=False)
+
+  class Meta:
+    model = ClassRoom
     fields = '__all__'

@@ -69,6 +69,9 @@ class Person(TimespamtedModel):
       upload_to=avatar_image_upload_path, blank=True, null=True)
   # avatar = models.ImageField(upload_to=upload_to2, blank=True, null=True)
 
+  def create_qr_code(self):
+    pass
+
   class Meta:
     abstract = True
 
@@ -83,6 +86,9 @@ class User(Person):
       School, related_name="users", blank=True, null=True)
   _password = None
   REQUIRED_FIELDS = ["username", "password"]
+
+  def is_root(self):
+    return self.role.name == Role.objects.get(name='root').name
 
   def get_full_name(self):
     full_name = "%s %s" % (self.first_name, self.last_name)
@@ -111,8 +117,8 @@ class Subject(TimespamtedModel):
 class ClassLevel(TimespamtedModel):
   name = models.CharField(max_length=25)
   school = models.ForeignKey(
-      School, related_name='classes', on_delete=models.CASCADE)
-  subjects = models.ManyToManyField(Subject, related_name='classes')
+      School, related_name='class_levels', on_delete=models.CASCADE)
+  subjects = models.ManyToManyField(Subject, related_name='class_levels')
   level = models.IntegerField(default=0, unique=True)
   current_price = models.IntegerField(default=0)
   new_student_price = models.IntegerField(default=0)
@@ -123,17 +129,22 @@ class ClassLevel(TimespamtedModel):
 
 class ClassRoom(TimespamtedModel):
   name = models.CharField(max_length=50)
-  classroom_class = models.ForeignKey(
+  class_level = models.ForeignKey(
       ClassLevel, related_name='classrooms', on_delete=models.CASCADE)
 
 
 class Professor(User):
   subject = models.ForeignKey(
       Subject, related_name='professors', on_delete=models.CASCADE)
-  classes = models.ManyToManyField(ClassLevel, related_name="professors")
+  class_levels = models.ManyToManyField(ClassLevel, related_name="professors")
 
   def __str__(self):
     return self.name
+
+
+class Student(Person):
+  classroom = models.ForeignKey(
+      ClassRoom, related_name='students', on_delete=models.CASCADE)
 
 
 class Action(TimespamtedModel):
