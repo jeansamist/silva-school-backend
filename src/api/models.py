@@ -64,7 +64,7 @@ class Person(TimespamtedModel):
   sex = models.CharField(max_length=255, default='M')
   status = models.CharField(max_length=255, default='new')
   email = models.EmailField(null=True, blank=True)
-  phone = models.IntegerField(null=True, blank=True)
+  phone = models.TextField(null=True, blank=True)
   avatar = models.ImageField(
       upload_to=avatar_image_upload_path, blank=True, null=True)
   # avatar = models.ImageField(upload_to=upload_to2, blank=True, null=True)
@@ -143,6 +143,7 @@ class Professor(User):
 
 
 class Student(Person):
+  register = models.BooleanField(default=False)
   classroom = models.ForeignKey(
       ClassRoom, related_name='students', on_delete=models.CASCADE)
 

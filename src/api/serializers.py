@@ -43,6 +43,15 @@ class UserSerailizer(serializers.ModelSerializer):
     return user
 
 
+class StudentSerializer(serializers.ModelSerializer):
+  classroom = serializers.PrimaryKeyRelatedField(
+      queryset=ClassRoom.objects.all(), many=False)
+
+  class Meta:
+    model = Student
+    fields = '__all__'
+
+
 class ClassLevelSerializer(serializers.ModelSerializer):
   school = serializers.PrimaryKeyRelatedField(
       queryset=School.objects.all(), many=False)
