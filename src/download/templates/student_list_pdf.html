@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {{classroom.class_level.school.name}} - Students from {{classroom.name}}
+    </title>
+  </head>
+  <body>
+    <div style="text-align: center">
+      <h1 style="font-size: 25px">{{classroom.class_level.school.name}}</h1>
+      <img
+        src="http://127.0.0.1:8000/uploads/{{classroom.class_level.school.image}}"
+      />
+    </div>
+    <br />
+    <table style="font-size: 10px">
+      <tr>
+        <th>Class Name</th>
+        <td>{{classroom.name}}</td>
+      </tr>
+      <tr>
+        <th>Male Quantity</th>
+        <td>{{boys_nbr}}</td>
+      </tr>
+      <tr>
+        <th>Female Quantity</th>
+        <td>{{girls_nbr}}</td>
+      </tr>
+      <tr style="border-bottom: 1px solid black">
+        <th>Class size</th>
+        <td>{{nbr_of_student}}</td>
+      </tr>
+    </table>
+    <br />
+    <table style="box-shadow: 1px 1px 3px black">
+      <thead>
+        <tr>
+          <!-- <th style="width: 50px">Id</th> -->
+          <th style="width: 25%">Full name</th>
+          <th>Birthdate</th>
+          <th style="width: 50px">sex</th>
+          <th>Address</th>
+          <th style="width: 50px">Status</th>
+          <th>Phone</th>
+          <!-- <th>E-mail</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <!-- <td>{{student.id}}</td> -->
+          <td>{{student.first_name}} {{student.last_name}}</td>
+          <td>{{student.birthdate}}</td>
+          <td>{{student.sex}}</td>
+          <td>{{student.address}}</td>
+          <td>{{student.status}}</td>
+          <td>{{student.phone}}</td>
+          <!-- <td>{{student.email}}</td> -->
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+  <style>
+    table {
+      text-align: left;
+      width: 100%;
+      margin-top: 0.5em;
+      font-size: 12px;
+      border-spacing: 4px;
+    }
+
+    table td,
+    table th {
+      padding: 0.25em 0.5em;
+      padding-top: 0.5em;
+      border-radius: 4px;
+      text-align: left;
+    }
+
+    table thead {
+      background: #6f53f4;
+      color: #000000;
+    }
+
+    table > tbody > tr {
+      cursor: pointer;
+      box-shadow: 0 2px 4px var(--shadow);
+      transition: box-shadow 0.3s linear;
+      border-top: 1px solid black;
+    }
+  </style>
+</html>
