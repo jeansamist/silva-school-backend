@@ -1,10 +1,31 @@
 from rest_framework.exceptions import NotAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT, HTTP_404_NOT_FOUND
 from rest_framework.views import APIView
 from django.core.paginator import Paginator
 from ..serializers import StudentSerializer
 from ..models import Student, User
+
+
+class StudentDetailView(APIView):
+  def get_student(self, pk):
+    try:
+      return Student.objects.get(pk=pk)
+    except:
+      return {"error": 'Student {id} does not found :('.format(id=pk)}
+
+  def get(self, request, student_pk):
+    try:
+      user = User.objects.get(pk=request.current_user.pk)
+    except:
+      return Response({'details': 'You cannot access to a Student Service. Try to login'}, HTTP_401_UNAUTHORIZED)
+
+    student = self.get_student(student_pk)
+    try:
+      serializer = StudentSerializer(student)
+      return Response(serializer.data)
+    except:
+      return Response(student, status=HTTP_404_NOT_FOUND)
 
 
 class StudenListView(APIView):

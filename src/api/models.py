@@ -1,6 +1,5 @@
 from django.db import models
-# import random
-from qrcode import make
+import random
 from django.contrib.auth.models import Permission
 from django.contrib.auth.hashers import (
     check_password,
@@ -8,6 +7,7 @@ from django.contrib.auth.hashers import (
 )
 from pathlib import Path
 import datetime
+import string
 # Create your models here.
 
 
@@ -26,7 +26,6 @@ def school_image_upload_path(instance, filename):
 def avatar_image_upload_path(instance, filename):
   from .functions import random_filename
   ext = Path(filename).suffix
-  make('test')
   return 'images/avatars/{filename}'.format(filename=random_filename(ext))
 
 
@@ -65,12 +64,18 @@ class Person(TimespamtedModel):
   status = models.CharField(max_length=255, default='new')
   email = models.EmailField(null=True, blank=True)
   phone = models.TextField(null=True, blank=True)
+  code = models.CharField(unique=True, null=True, blank=True, max_length=10)
   avatar = models.ImageField(
       upload_to=avatar_image_upload_path, blank=True, null=True)
   # avatar = models.ImageField(upload_to=upload_to2, blank=True, null=True)
 
-  def create_qr_code(self):
-    pass
+  def create_code(self):
+    letters = string.ascii_uppercase
+    numbers = string.digits
+    end = ''.join(random.choice(numbers) for i in range(5))
+    start = ''.join(random.choice(numbers) for i in range(4))
+    middle = ''.join(random.choice(letters) for i in range(1))
+    self.code = f'{start}{middle}{end}'
 
   class Meta:
     abstract = True

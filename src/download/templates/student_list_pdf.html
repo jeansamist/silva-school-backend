@@ -5,15 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
-      {{classroom.class_level.school.name}} - Students from {{classroom.name}}
+      {{classroom.class_level.school.name}} - Students list from
+      {{classroom.name}}
     </title>
   </head>
   <body>
     <div style="text-align: center">
-      <h1 style="font-size: 25px">{{classroom.class_level.school.name}}</h1>
-      <img
-        src="http://127.0.0.1:8000/uploads/{{classroom.class_level.school.image}}"
-      />
+      <h1 style="font-size: 25px; margin-bottom: 0px">
+        {{classroom.class_level.school.name}} - Students list from
+        {{classroom.name}}
+      </h1>
     </div>
     <br />
     <table style="font-size: 10px">
@@ -40,8 +41,9 @@
         <tr>
           <!-- <th style="width: 50px">Id</th> -->
           <th style="width: 25%">Full name</th>
+          <th style="width: 100px">Code</th>
           <th>Birthdate</th>
-          <th style="width: 50px">sex</th>
+          <th style="width: 50px">Sex</th>
           <th>Address</th>
           <th style="width: 50px">Status</th>
           <th>Phone</th>
@@ -53,6 +55,7 @@
         <tr>
           <!-- <td>{{student.id}}</td> -->
           <td>{{student.first_name}} {{student.last_name}}</td>
+          <td>{{student.code}}</td>
           <td>{{student.birthdate}}</td>
           <td>{{student.sex}}</td>
           <td>{{student.address}}</td>

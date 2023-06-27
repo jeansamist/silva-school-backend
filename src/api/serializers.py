@@ -47,6 +47,12 @@ class StudentSerializer(serializers.ModelSerializer):
   classroom = serializers.PrimaryKeyRelatedField(
       queryset=ClassRoom.objects.all(), many=False)
 
+  def create(self, validated_data):
+    student = self.Meta.model.objects.create(**validated_data)
+    student.create_code()
+    student.save()
+    return student
+
   class Meta:
     model = Student
     fields = '__all__'

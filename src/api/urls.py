@@ -1,7 +1,7 @@
 from django.urls import path
 from api.views.userViews import RegisterView
 from api.views.schoolViews import SchoolView, SchoolDetailView
-from api.views.studentViews import StudentView, StudenListView
+from api.views.studentViews import StudentView, StudenListView, StudentDetailView
 from api.views.configViews import ConfigView
 from api.views.authView import LoginView, CurrentAuthUserView
 from api.views.ClassesViews import ClassLevelView, ClassLevelDetailView, ClassRoomView
@@ -20,4 +20,5 @@ urlpatterns = [
     path('class/<int:class_level_pk>/classroom/<int:classroom_pk>/student',
          StudenListView.as_view()),
     path('student', StudentView.as_view()),
+    path('student/<int:student_pk>', StudentDetailView.as_view()),
 ]
