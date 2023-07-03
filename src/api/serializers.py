@@ -38,7 +38,6 @@ class UserSerailizer(serializers.ModelSerializer):
     if password is not None:
       user.set_password(password)
     user.schools.set(schools_data)
-    user.create_qr_code()
     user.save()
     return user
 
