@@ -14,6 +14,9 @@ class StudentDetailView(APIView):
     except:
       return {"error": 'Student {id} does not found :('.format(id=pk)}
 
+  def put(self, request):
+    pass
+
   def get(self, request, student_pk):
     try:
       user = User.objects.get(pk=request.current_user.pk)
@@ -78,3 +81,4 @@ class StudentView(APIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
     else:
       return Response({'details': 'Try to login'}, HTTP_401_UNAUTHORIZED)
+
